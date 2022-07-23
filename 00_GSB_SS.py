@@ -26,7 +26,7 @@ import codecs
 
 
 if sys.platform.startswith('win'):
-    from scraper_api import proxies
+    # from scraper_api import proxies
     import winsound
 warnings.filterwarnings('ignore')
 
@@ -114,10 +114,30 @@ def direct_request_(url, header):
             time.sleep(10 * (i + 1))
     return resp
 
+def files(my_file='', folder=''):
+    bp_lin = r"/storage/emulated/0/qpython/scripts3/"
+    # bp_win = os.path.dirname(os.path.abspath(__file__))
+    bp_win = r"C:\Users\Administrator\BetFiles"
+    
+    my_file = my_file.replace('/', '')
+    path_file = os.path.join(bp_win, folder, my_file) if sys.platform.lower().startswith('win') else os.path.join(bp_lin, folder, my_file)
+    path_folder = os.path.join(bp_win, folder) if sys.platform.lower().startswith('win') else os.path.join(bp_lin, folder)
+    print(path_folder)
+    print(path_file)
+    if not os.path.exists(path_folder):
+        os.makedirs(path_folder)
+    
+    return path_file
+    # path = os.path.join(bp_win,
+    #                     folder,
+    #                     my_file) if sys.platform.lower().startswith('win') else os.path.join(bp_lin, folder, my_file)
+    # if not os.path.exists(path):
+    #     with open(path, 'w+') as f:
+    #         pass
+    # return path
 
-gsb_session = requests_cache.CachedSession('gsb_cache')
-sofa_session = requests_cache.CachedSession('sofa_cache')
-
+gsb_session = requests_cache.CachedSession(files('gsb_cache'))
+sofa_session = requests_cache.CachedSession(files('sofa_cache'))
 
 def session_request(url, site_session, header):
     resp = ''
@@ -134,24 +154,6 @@ def session_request(url, site_session, header):
 
 # def combined_request(selector=0):
 #     if selector == 0:
-
-def files(my_file='', folder=''):
-    bp_lin = r"/storage/emulated/0/qpython/scripts3/"
-    # bp_win = os.path.dirname(os.path.abspath(__file__))
-    bp_win = 'C:\Users\Administrator\BetFiles'
-
-    my_file = my_file.replace('/', '')
-    return os.path.join(bp_win,
-                        folder,
-                        my_file) if sys.platform.lower().startswith('win') else os.path.join(bp_lin, folder, my_file)
-    # path = os.path.join(bp_win,
-    #                     folder,
-    #                     my_file) if sys.platform.lower().startswith('win') else os.path.join(bp_lin, folder, my_file)
-    # if not os.path.exists(path):
-    #     with open(path, 'w+') as f:
-    #         pass
-    # return path
-
 
 with open(files('log.txt'), 'w', encoding='utf-8') as logger:
     logger.write('Start\n')
@@ -1028,8 +1030,13 @@ def double_team_history(sf,  save_folder='', id1=42, id2=3179, min_wins=10):
 
 def main(min_, over, under, sf, min_xh_wins=20, look_back_mm=20, starting_offset=0, sf_offset=2):
     hours_ = 10
-
-    t1 = open(files(r'000 timer.txt'), 'r', encoding='utf-8')
+    if os.path.exists(files(r'000 timer.txt')):
+        t1 = open(files(r'000 timer.txt'), 'r', encoding='utf-8')
+    else:
+        with open(files(r'000 timer.txt'), 'w', encoding='utf-8') as tx:
+            tx.write('Start\n')
+            tx.write('2021-01-01 00:00:00')
+        t1 = open(files(r'000 timer.txt'), 'r', encoding='utf-8')
     try:
         run_time = datetime.strptime(
             t1.readlines()[-1], std_date_time_format_dotted())
@@ -1077,12 +1084,12 @@ def main(min_, over, under, sf, min_xh_wins=20, look_back_mm=20, starting_offset
 # main(min_=3, over=1.5, under=3.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=0, sf_offset=2)
 n = 2
 
-main(min_=2, over=3.5, under=1.5, sf=True, min_xh_wins=3, look_back_mm=12, starting_offset=0, sf_offset=n)
-main(min_=2, over=2.5, under=2.5, sf=True, min_xh_wins=3, look_back_mm=8, starting_offset=0, sf_offset=n)
-main(min_=2, over=1.5, under=3.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=0, sf_offset=n)
+main(min_=3, over=3.5, under=1.5, sf=True, min_xh_wins=3, look_back_mm=12, starting_offset=0, sf_offset=n)
+main(min_=3, over=2.5, under=2.5, sf=True, min_xh_wins=3, look_back_mm=8, starting_offset=0, sf_offset=n)
+main(min_=3, over=1.5, under=3.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=0, sf_offset=n)
 
-main(min_=2, over=0.5, under=7.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=0, sf_offset=1)
-main(min_=2, over=0.5, under=7.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=1, sf_offset=2)
+main(min_=3, over=0.5, under=7.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=0, sf_offset=1)
+main(min_=3, over=0.5, under=7.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=1, sf_offset=2)
 # main(min_=2, over=0.5, under=7.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=2, sf_offset=3)
 # main(min_=2, over=0.5, under=7.5, sf=True, min_xh_wins=3, look_back_mm=6, starting_offset=3, sf_offset=4)
 
